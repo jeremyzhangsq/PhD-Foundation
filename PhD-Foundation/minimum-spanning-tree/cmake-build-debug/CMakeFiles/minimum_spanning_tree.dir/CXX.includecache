@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/jeremy/Documents/PhD-Foundation/minimum-spanning-tree/main.cpp
+iostream
+-
+stdio.h
+-
+stdlib.h
+-
+vector
+-
+unordered_map
+-
+
