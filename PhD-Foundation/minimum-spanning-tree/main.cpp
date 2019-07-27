@@ -92,21 +92,22 @@ class Ptr{
 public:
     Node *head;
     Node *tail;
+    int weight; // heuristic weight: every time merge small to large
     Ptr(Node* reprsnt){
         head = new Node(-1,reprsnt);
         tail = new Node(-1,reprsnt);
     }
 };
 
-
+// use linked list to implement disjoint set data structure
 class setBylist{
-
 public:
     Ptr* makeSet(Node* a){
         Ptr *ptr = new Ptr(a);
         a->pre = ptr;
         ptr->head->next = a;
         ptr->tail->next = a;
+        ptr->weight = 1;
         a->next = nullptr;
         return ptr;
     }
@@ -115,7 +116,19 @@ public:
         return a->pre;
     }
 
-    Ptr* unionSet(Ptr* a, Ptr* b){
+    Ptr* unionSet(Ptr* p1, Ptr* p2){
+        Ptr* a;
+        Ptr* b;
+        if(p1->weight>=p2->weight){
+            a = p1;
+            b = p2;
+        }
+        else{
+            a = p2;
+            b = p1;
+        }
+
+        a->weight += b->weight;
         Node* first = b->head->next;
         Node* end = b->tail->next;
         for(Node* node = first; node!= nullptr;node = node->next){
@@ -126,6 +139,10 @@ public:
 
         return a;
     }
+
+};
+
+class setBytree{
 
 };
 
