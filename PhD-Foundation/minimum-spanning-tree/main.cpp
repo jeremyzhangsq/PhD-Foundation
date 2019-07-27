@@ -180,10 +180,13 @@ void Kruskal(Graph &g){
 
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 //    srand((unsigned) time(NULL));
     srand(1);
-    Graph graph(5,10);
+    int n = stoi(argv[1]);
+    int m = stoi(argv[2]);
+
+    Graph graph(n,m);
     Kruskal(graph);
     return 0;
 }
