@@ -148,6 +148,8 @@ public:
     int *parent;
     setBytree(int size){
         parent = new int[size];
+        for(int i = 0;i<size;i++)
+            parent[i] = -1;
     }
     void makeSet(int ele){
         parent[ele] = ele;
@@ -160,23 +162,21 @@ public:
             return Find(parent[ele]);
     }
 
-    void Union(int ele1, int ele2){
+    bool Union(int ele1, int ele2){
         int f1 = Find(ele1);
         int f2 = Find(ele2);
-        parent[f2] = f1;
+        if (f1!=f2){
+            parent[f2] = f1;
+            return true;
+        }
+        return false;
+
     }
 
 };
 
-void printMST(Ptr* ptr){
-    Node* head = ptr->head;
-    for(Node* node = head->next;node!=nullptr;node = node->next){
-        printf("%d\t",node->val);
-    }
-    printf("\n");
-}
 
-void Kruskal(Graph &g){
+void kruskalBylist(Graph &g){
 
     setBylist util;
     vector<Ptr*> ptrs(g.n);
@@ -197,10 +197,29 @@ void Kruskal(Graph &g){
         Node* v = nodes[e->v];
         if(u->pre != v->pre){
             final = util.Union(util.Find(u), util.Find(v));
-            printMST(final);
+            printf("(%d,%d)\t",e->u,e->v);
         }
     }
 
+}
+
+void kruskalBytree(Graph &g){
+    setBytree tree(g.n);
+    // make set for every vertex
+    for(int val:g.vertex){
+        tree.makeSet(val);
+    }
+    // sort edges by weight ascendingly
+    sort(g.edges.begin(),g.edges.end(),cpEdge);
+
+    // traversal all edges and do union-set()
+    for(Edge* e: g.edges){
+        int u = e->u;
+        int v = e->v;
+        bool success = tree.Union(tree.Find(u),tree.Find(v));
+        if (success)
+            printf("(%d,%d)\t",e->u,e->v);
+    }
 }
 
 int main(int argc, char* argv[]) {
@@ -208,8 +227,11 @@ int main(int argc, char* argv[]) {
     srand(1);
     int n = stoi(argv[1]);
     int m = stoi(argv[2]);
-
+    int type = stoi(argv[3]);
     Graph graph(n,m);
-    Kruskal(graph);
+    if (type)
+        kruskalBylist(graph);
+    else
+        kruskalBytree(graph);
     return 0;
 }
