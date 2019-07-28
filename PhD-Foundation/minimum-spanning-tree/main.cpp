@@ -146,13 +146,19 @@ public:
 class setBytree{
 public:
     int *parent;
+    int *rank; //improvement: union by rank
     setBytree(int size){
         parent = new int[size];
-        for(int i = 0;i<size;i++)
+        rank = new int[size];
+        for(int i = 0;i<size;i++){
             parent[i] = -1;
+            rank[i] = 0;
+        }
+
     }
     void makeSet(int ele){
         parent[ele] = ele;
+        rank[ele] = 1;
     }
 
     int Find(int ele){
@@ -165,11 +171,20 @@ public:
     bool Union(int ele1, int ele2){
         int f1 = Find(ele1);
         int f2 = Find(ele2);
-        if (f1!=f2){
+        if (f1==f2)
+            return false;
+        // union by rank
+        int r1 = rank[f1];
+        int r2 = rank[f2];
+        if(r1>r2)
             parent[f2] = f1;
-            return true;
+        else if(r2>r1)
+            parent[f1] = f2;
+        else{
+            parent[f1] = f2;
+            rank[f2]++;
         }
-        return false;
+        return true;
 
     }
 
