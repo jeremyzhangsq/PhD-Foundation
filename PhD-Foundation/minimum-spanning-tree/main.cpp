@@ -112,11 +112,11 @@ public:
         return ptr;
     }
 
-    Ptr* findSet(Node* a){
+    Ptr* Find(Node *a){
         return a->pre;
     }
 
-    Ptr* unionSet(Ptr* p1, Ptr* p2){
+    Ptr* Union(Ptr *p1, Ptr *p2){
         Ptr* a;
         Ptr* b;
         if(p1->weight>=p2->weight){
@@ -142,7 +142,29 @@ public:
 
 };
 
+// use tree to implement disjoint set data structure
 class setBytree{
+public:
+    int *parent;
+    setBytree(int size){
+        parent = new int[size];
+    }
+    void makeSet(int ele){
+        parent[ele] = ele;
+    }
+
+    int Find(int ele){
+        if(ele==parent[ele])
+            return ele;
+        else
+            return Find(parent[ele]);
+    }
+
+    void Union(int ele1, int ele2){
+        int f1 = Find(ele1);
+        int f2 = Find(ele2);
+        parent[f2] = f1;
+    }
 
 };
 
@@ -153,6 +175,7 @@ void printMST(Ptr* ptr){
     }
     printf("\n");
 }
+
 void Kruskal(Graph &g){
 
     setBylist util;
@@ -173,7 +196,7 @@ void Kruskal(Graph &g){
         Node* u = nodes[e->u];
         Node* v = nodes[e->v];
         if(u->pre != v->pre){
-            final = util.unionSet(util.findSet(u),util.findSet(v));
+            final = util.Union(util.Find(u), util.Find(v));
             printMST(final);
         }
     }
