@@ -160,12 +160,26 @@ public:
         parent[ele] = ele;
         rank[ele] = 1;
     }
-
-    int Find(int ele){
+    // Find() without optimization
+    int Find1(int ele){
         if(ele==parent[ele])
             return ele;
         else
-            return Find(parent[ele]);
+            return Find1(parent[ele]);
+    }
+
+    // Find() with path compression
+    int Find(int ele){
+        unordered_set<int> pre;
+        int cur = ele;
+        while(cur!=parent[cur]){
+            pre.insert(cur);
+            cur = parent[cur];
+        }
+        for(int i : pre){
+            parent[i] = cur;
+        }
+        return cur;
     }
 
     bool Union(int ele1, int ele2){
@@ -206,12 +220,11 @@ void kruskalBylist(Graph &g){
     sort(g.edges.begin(),g.edges.end(),cpEdge);
 
     // traversal all edges and do union-set()
-    Ptr* final;
     for(Edge* e: g.edges){
         Node* u = nodes[e->u];
         Node* v = nodes[e->v];
         if(u->pre != v->pre){
-            final = util.Union(util.Find(u), util.Find(v));
+            util.Union(util.Find(u), util.Find(v));
             printf("(%d,%d)\t",e->u,e->v);
         }
     }
@@ -231,7 +244,7 @@ void kruskalBytree(Graph &g){
     for(Edge* e: g.edges){
         int u = e->u;
         int v = e->v;
-        bool success = tree.Union(tree.Find(u),tree.Find(v));
+        bool success = tree.Union(u,v);
         if (success)
             printf("(%d,%d)\t",e->u,e->v);
     }
