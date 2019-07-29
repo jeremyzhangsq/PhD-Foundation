@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <unordered_map>
+#include <queue>
 #include <unordered_set>
 using namespace std;
 
@@ -40,27 +41,51 @@ public:
                 vertex.push_back(m);
             }
             addEdge(s,t,w);
-            m++;
         }
+        clean();
 
     }
 
     void checkPoint(int u, Edge *e){
         auto iter = graph.find(u);
         if(iter == graph.end()){
-            vector<Edge*> edges;
-            edges.reserve(n);
+            vector<Edge*> edge;
+//            edges.reserve(n);
+            edge.push_back(e);
+            graph.insert(make_pair(u,edge));
             edges.push_back(e);
-            graph.insert(make_pair(u,edges));
+            m++;
         }
         else{
-            iter->second.push_back(e);
+            bool has = false;
+            for(auto edge:iter->second){
+                if (edge->v == e->v){
+                    has = true;
+                    break;
+                }
+            }
+            if(!has){
+                iter->second.push_back(e);
+                edges.push_back(e);
+                m++;
+            }
         }
-        edges.push_back(e);
     }
     void addEdge(int u, int v, int w){
         Edge* e = new Edge(u,v,w);
         checkPoint(u,e);
+    }
+    void clean(){
+        unordered_set<int> tmp(vertex.begin(),vertex.end());
+        for(auto p:graph){
+            tmp.erase(p.first);
+        }
+        n-=tmp.size();
+        for(auto p = vertex.begin();p!=vertex.end();p++){
+            int val = *p;
+            if(tmp.count(val))
+                vertex.erase(p);
+        }
     }
 
 
@@ -199,7 +224,6 @@ public:
             rank[f2]++;
         }
         return true;
-
     }
 
 };
