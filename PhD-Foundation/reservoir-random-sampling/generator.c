@@ -6,7 +6,7 @@ int main(int argc, char* argv[]){
 	FILE *fp;
 	fp = fopen("record.txt","w");
 	for(int i = 0; i<n; i++){
-		fprintf(fp,"%d\t", rand()%10000);
+		fprintf(fp,"%d\t", rand()%100);
 	}
 	fprintf(fp,"\n");
 	fclose(fp);
