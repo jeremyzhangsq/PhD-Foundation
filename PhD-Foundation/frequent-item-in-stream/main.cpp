@@ -56,7 +56,7 @@ void Majority(vector<int> &arr){
 
 }
 
-void BruteFore(vector<int> &arr, int k){
+void BruteFore(vector<int> &arr, double s){
     unordered_map<int,int> dict;
     for(int val:arr){
         if(dict.count(val))
@@ -66,6 +66,7 @@ void BruteFore(vector<int> &arr, int k){
         }
     }
     printf("Brute Force Result:");
+    int k = (int)arr.size()*s;
     for(auto ele:dict){
         if(ele.second>k)
             printf("%d\t",ele.first);
@@ -84,11 +85,27 @@ list<Group>::iterator find(list<Group> &groups,int i){
 
 }
 
-void Frequent(vector<int> &arr, int k){
-    int m = arr.size()/k-1;
+void decrement(list<Group> &groups){
+    auto first = groups.begin();
+    for(;first!=groups.end();first++){
+        if(first->delta>=1){
+            first->delta--;
+            if(!first->delta){
+                prev(first,1)->capacity=first->data.size();
+//                groups.erase(first);
+            }
+            return;
+        }
+    }
+}
+
+void Frequent(vector<int> &arr, double s){
+    int m = 1/s-1;
+    int k = (int)arr.size()*s;
+    int offset = 0;
     list<Group> groups;
     Group g0(0,m);
-    Group g1(1);
+    Group g1(k-1);
     // insert head and tail into list
     groups.push_back(g0);
     groups.push_back(g1);
@@ -98,38 +115,36 @@ void Frequent(vector<int> &arr, int k){
         if(g==groups.end() and groups.front().delta == 0 and groups.front().capacity){
             auto head = groups.begin();
             head->capacity--;
-            auto nxt = next(head,1);
-            nxt->add(ele);
+            head->add(ele);
+            g = head;
         }
         // the element is represented by a count
-        else if(g!=groups.end()){
-            g->data.erase(ele);
+        if(g!=groups.end()){
             auto nxt = next(g,1);
+            g->data.erase(ele);
             // move it to next group
-            if(nxt == groups.end()){
+            if(nxt==groups.end()){
                 Group gc(1);
                 gc.add(ele);
                 groups.push_back(gc);
-
+            }
+            else if(nxt->delta>1) {
+                nxt->delta--;
+                Group gc(1);
+                gc.add(ele);
+                groups.insert(nxt, gc);
             }else
                 nxt->data.insert(ele);
 
         }
         // decrement
         else{
-            auto first = groups.begin();
-            for(;first!=groups.end();first++){
-                if(first->delta>=1){
-                    first->delta--;
-                    first->capacity=first->data.size();
-                    groups.erase(prev(first,1));
-                    return;
-                }
-            }
+            decrement(groups);
+            offset++;
         }
     }
     printf("Frequent Counting Result:");
-    for(auto it = next(groups.begin(),k);it!=groups.end();it++){
+    for(auto it = next(groups.begin(),k+offset);it!=groups.end();it++){
         for(int ele: it->data){
             printf("%d\t",ele);
         }
@@ -137,7 +152,10 @@ void Frequent(vector<int> &arr, int k){
     printf("\n");
 }
 
+void Lossy(vector<int> &arr, int k){
 
+
+}
 int main() {
     FILE *fp;
     char* file = "/Users/jeremy/Documents/PhD-Foundation/frequent-item-in-stream/record.txt";
@@ -147,9 +165,10 @@ int main() {
     while(fscanf(fp,"%d\t",&val)!=EOF){
         data.push_back(val);
     }
+    double s = 0.13;
     Majority(data);
-    BruteFore(data,8);
-    Frequent(data,8);
+    BruteFore(data,s);
+    Frequent(data,s);
     return 0;
 }
 
