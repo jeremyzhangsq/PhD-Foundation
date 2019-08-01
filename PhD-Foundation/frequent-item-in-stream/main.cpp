@@ -30,6 +30,8 @@ public:
         return *(data.find(i));
     }
 };
+
+
 void Majority(vector<int> &arr){
     int count=0;
     int majority=0;
@@ -57,7 +59,7 @@ void Majority(vector<int> &arr){
 
 }
 
-vector<int> BruteFore(vector<int> &arr, double s){
+vector<int> BruteForce(vector<int> &arr, double s){
     unordered_map<int,int> dict;
     for(int val:arr){
         if(dict.count(val))
@@ -76,33 +78,8 @@ vector<int> BruteFore(vector<int> &arr, double s){
         }
     }
     printf("\n");
+    sort(result.begin(),result.end());
     return result;
-}
-
-list<Group>::iterator find(list<Group> &groups,int i){
-
-    list<Group>::iterator g;
-    for(g = groups.begin();g!=groups.end();g++){
-        if (g->data.count(i))
-            return g;
-    }
-    return groups.end();
-
-}
-
-void decrement(list<Group> &groups){
-    auto first = groups.begin();
-    for(;first!=groups.end();first++){
-        if(first->delta>=1){
-            first->delta--;
-            if(!first->delta){
-                prev(first,1)->capacity=first->data.size();
-                prev(first,1)->data.erase(prev(first,1)->data.begin(),prev(first,1)->data.end());
-                groups.erase(first);
-            }
-            return;
-        }
-    }
 }
 
 /*
@@ -111,7 +88,6 @@ void decrement(list<Group> &groups){
  * */
 vector<int> Frequent0(vector<int> &arr, double s){
     int m = 1/s-1;
-    int k = (int)arr.size()*s;
     unordered_map<int,int> dict;
     for(int &ele:arr){
         if(dict.count(ele)){
@@ -136,15 +112,83 @@ vector<int> Frequent0(vector<int> &arr, double s){
         result.push_back(it.first);
     }
     printf("\n");
+    sort(result.begin(),result.end());
     return result;
 }
+
+list<Group>::iterator find(list<Group> &groups,int i){
+
+    list<Group>::iterator g;
+    for(g = groups.begin();g!=groups.end();g++){
+        if (g->data.count(i))
+            return g;
+    }
+    return groups.end();
+
+}
+void groupInit(list<Group> &groups, int &ele, list<Group>::iterator &g) {
+    auto head = groups.begin();
+    head->capacity--;
+    head->add(ele);
+    g = head;
+}
+
+void groupUpdate(list<Group> &groups, int &ele, list<Group>::iterator &g) {
+    auto nxt = next(g, 1);
+    g->data.erase(ele);
+    // move it to next group
+    if(nxt==groups.end()){
+        Group gc(1);
+        gc.add(ele);
+        groups.push_back(gc);
+    }
+    else if(nxt->delta>1) {
+        nxt->delta--;
+        Group gc(1);
+        gc.add(ele);
+        groups.insert(nxt, gc);
+    }else
+        nxt->data.insert(ele);
+}
+void decrement(list<Group> &groups){
+    auto first = groups.begin();
+    for(;first!=groups.end();first++){
+        if(first->delta>=1){
+            first->delta--;
+            if(!first->delta){
+                prev(first,1)->capacity=first->data.size();
+                prev(first,1)->data.erase(prev(first,1)->data.begin(),prev(first,1)->data.end());
+                groups.erase(first);
+            }
+            return;
+        }
+    }
+}
+void replaceMin(list<Group> &groups){
+    auto first = groups.begin();
+    for(;first!=groups.end();first++){
+        if(first->delta>=1 and !first->data.empty()){
+            int todel = *(first->data.begin());
+            groupUpdate(groups,todel,first);
+            if(first->data.empty()){
+                first->delta--;
+                if(!first->delta){
+                    groups.erase(first);
+                }
+            }
+            return;
+        }
+    }
+
+}
+
 
 vector<int> Frequent(vector<int> &arr, double s){
     int m = 1/s-1;
     int k = (int)arr.size()*s;
     list<Group> groups;
     Group g0(0,m);
-    Group g1(k-1);
+    Group g1(k);
     // insert head and tail into list
     groups.push_back(g0);
     groups.push_back(g1);
@@ -152,28 +196,11 @@ vector<int> Frequent(vector<int> &arr, double s){
         auto g = find(groups,ele);
         // no count represents this element and some counts exist
         if(g==groups.end() and groups.front().delta == 0 and groups.front().capacity){
-            auto head = groups.begin();
-            head->capacity--;
-            head->add(ele);
-            g = head;
+            groupInit(groups, ele, g);
         }
         // the element is represented by a count
         if(g!=groups.end()){
-            auto nxt = next(g,1);
-            g->data.erase(ele);
-            // move it to next group
-            if(nxt==groups.end()){
-                Group gc(1);
-                gc.add(ele);
-                groups.push_back(gc);
-            }
-            else if(nxt->delta>1) {
-                nxt->delta--;
-                Group gc(1);
-                gc.add(ele);
-                groups.insert(nxt, gc);
-            }else
-                nxt->data.insert(ele);
+            groupUpdate(groups, ele, g);
 
         }
         // decrement
@@ -190,6 +217,47 @@ vector<int> Frequent(vector<int> &arr, double s){
         }
     }
     printf("\n");
+    sort(result.begin(),result.end());
+    return result;
+}
+
+
+
+vector<int> SpaceSaving(vector<int> &arr, double s){
+    int m = 1/s;
+    int k = (int)arr.size()*s;
+    list<Group> groups;
+    Group g0(0,m);
+    Group g1(k);
+    // insert head and tail into list
+    groups.push_back(g0);
+    groups.push_back(g1);
+    for(int &ele:arr){
+        auto g = find(groups,ele);
+        // no count represents this element and some counts exist
+        if(g==groups.end() and groups.front().delta == 0 and groups.front().capacity){
+            groupInit(groups, ele, g);
+        }
+        // the element is represented by a count
+        if(g!=groups.end()){
+            groupUpdate(groups, ele, g);
+
+        }
+        // replace val with min count
+        else{
+            replaceMin(groups);
+        }
+    }
+    printf("Space Saving Result:");
+    vector<int> result;
+    for(auto it = next(groups.begin(),1);it!=groups.end();it++){
+        for(int ele: it->data){
+            printf("%d\t",ele);
+            result.push_back(ele);
+        }
+    }
+    printf("\n");
+    sort(result.begin(),result.end());
     return result;
 }
 
@@ -236,8 +304,10 @@ vector<int> Lossy(vector<int> &arr, double s, double epsilon){
 
     }
     printf("\n");
+    sort(result.begin(),result.end());
     return result;
 }
+
 int main() {
     FILE *fp;
     char* file = "/Users/jeremy/Documents/PhD-Foundation/frequent-item-in-stream/record.txt";
@@ -247,18 +317,15 @@ int main() {
     while(fscanf(fp,"%d\t",&val)!=EOF){
         data.push_back(val);
     }
-    double s = 0.001;
-    double epsilon = 0;
+    double s = 0.01;
+    double epsilon = 0.00001;
     Majority(data);
     vector<int> res;
-    vector<int> bf = BruteFore(data,s);
+    vector<int> bf = BruteForce(data, s);
     vector<int> fq = Frequent(data,s);
     vector<int> fq0 = Frequent0(data,s);
     vector<int> ls = Lossy(data,s,epsilon);
-    sort(bf.begin(),bf.end());
-    sort(fq.begin(),fq.end());
-    sort(fq0.begin(),fq0.end());
-    sort(ls.begin(),ls.end());
+    vector<int> ss = SpaceSaving(data,s);
     set_intersection(bf.begin(),bf.end(),fq.begin(),fq.end(),back_inserter(res));
     printf("FQ accuracy:%.2f\n",(double)res.size()/bf.size());
     vector<int>().swap(res);
@@ -266,7 +333,10 @@ int main() {
     printf("FQ0 accuracy:%.2f\n",(double)res.size()/bf.size());
     vector<int>().swap(res);
     set_intersection(bf.begin(),bf.end(),ls.begin(),ls.end(),back_inserter(res));
-    printf("LS accuracy:%.2f\n",(double)res.size()/ls.size());
+    printf("LS accuracy:%.2f\n",(double)res.size()/bf.size());
+    vector<int>().swap(res);
+    set_intersection(bf.begin(),bf.end(),ss.begin(),ss.end(),back_inserter(res));
+    printf("SS accuracy:%.2f\n",(double)res.size()/bf.size());
     return 0;
 }
 
