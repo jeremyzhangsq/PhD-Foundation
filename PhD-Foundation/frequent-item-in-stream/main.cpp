@@ -97,17 +97,51 @@ void decrement(list<Group> &groups){
             first->delta--;
             if(!first->delta){
                 prev(first,1)->capacity=first->data.size();
-//                first->data.erase(first->data.begin(),first->data.end());
+                prev(first,1)->data.erase(prev(first,1)->data.begin(),prev(first,1)->data.end());
+                groups.erase(first);
             }
             return;
         }
     }
 }
 
+/*
+ * executing this algorithm with s = ε ensures that the count associated with each item on termination
+ * is at most εn below the true value.
+ * */
+vector<int> Frequent0(vector<int> &arr, double s){
+    int m = 1/s-1;
+    int k = (int)arr.size()*s;
+    unordered_map<int,int> dict;
+    for(int &ele:arr){
+        if(dict.count(ele)){
+            dict[ele]++;
+        }
+        else if(dict.size()<m){
+            dict.insert(make_pair(ele,1));
+        }
+        else{
+            for(auto &tuple:dict){
+                tuple.second--;
+                if(!tuple.second)
+                    dict.erase(tuple.first);
+            }
+        }
+    }
+
+    printf("Frequent0 Counting Result:");
+    vector<int> result;
+    for(auto it:dict){
+        printf("%d\t",it.first);
+        result.push_back(it.first);
+    }
+    printf("\n");
+    return result;
+}
+
 vector<int> Frequent(vector<int> &arr, double s){
     int m = 1/s-1;
     int k = (int)arr.size()*s;
-    int offset = 0;
     list<Group> groups;
     Group g0(0,m);
     Group g1(k-1);
@@ -145,17 +179,14 @@ vector<int> Frequent(vector<int> &arr, double s){
         // decrement
         else{
             decrement(groups);
-            offset++;
         }
     }
     printf("Frequent Counting Result:");
     vector<int> result;
-    if(groups.size()>=k+offset){
-        for(auto it = next(groups.begin(),k+offset-1);it!=groups.end();it++){
-            for(int ele: it->data){
-                printf("%d\t",ele);
-                result.push_back(ele);
-            }
+    for(auto it = next(groups.begin(),1);it!=groups.end();it++){
+        for(int ele: it->data){
+            printf("%d\t",ele);
+            result.push_back(ele);
         }
     }
     printf("\n");
@@ -216,18 +247,23 @@ int main() {
     while(fscanf(fp,"%d\t",&val)!=EOF){
         data.push_back(val);
     }
-    double s = 0.01;
+    double s = 0.001;
     double epsilon = 0;
     Majority(data);
     vector<int> res;
     vector<int> bf = BruteFore(data,s);
     vector<int> fq = Frequent(data,s);
+    vector<int> fq0 = Frequent0(data,s);
     vector<int> ls = Lossy(data,s,epsilon);
     sort(bf.begin(),bf.end());
     sort(fq.begin(),fq.end());
+    sort(fq0.begin(),fq0.end());
     sort(ls.begin(),ls.end());
     set_intersection(bf.begin(),bf.end(),fq.begin(),fq.end(),back_inserter(res));
-    printf("BF accuracy:%.2f\n",(double)res.size()/bf.size());
+    printf("FQ accuracy:%.2f\n",(double)res.size()/bf.size());
+    vector<int>().swap(res);
+    set_intersection(bf.begin(),bf.end(),fq0.begin(),fq0.end(),back_inserter(res));
+    printf("FQ0 accuracy:%.2f\n",(double)res.size()/bf.size());
     vector<int>().swap(res);
     set_intersection(bf.begin(),bf.end(),ls.begin(),ls.end(),back_inserter(res));
     printf("LS accuracy:%.2f\n",(double)res.size()/ls.size());
