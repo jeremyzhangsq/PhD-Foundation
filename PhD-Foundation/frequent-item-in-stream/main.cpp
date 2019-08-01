@@ -163,24 +163,33 @@ vector<int> Frequent(vector<int> &arr, double s){
 }
 
 vector<int> Lossy(vector<int> &arr, double s, double epsilon){
+    assert(epsilon<s);
     int n = 0;
     int FREQ = 0;
     int DELTA = 1;
     unordered_map<int,int*> T;
-    int w = (int)ceil(1/epsilon);
+    int w;
+    if(epsilon==0)
+        w = (int)ceil(1/s);
+    else
+        w = (int)ceil(1/epsilon);
     int bcur = 0;
     for(int &val:arr){
         n++;
         bcur = (int)ceil(n/w);
-        if(T.count(val))
+        if(T.count(val)){
             T[val][FREQ]++;
+        }
         else{
-            int tuple[2] = {1,bcur-1};
+            int* tuple = new int[2];
+            tuple[FREQ] = 1;
+            tuple[DELTA] = bcur-1;
             T.insert(make_pair(val,tuple));
         }
         if(n%w==0){
             for(auto item:T){
-                if(item.second[FREQ]+item.second[DELTA]<bcur)
+                int ele = item.second[FREQ]+item.second[DELTA];
+                if(ele<bcur)
                     T.erase(item.first);
             }
         }
@@ -207,8 +216,8 @@ int main() {
     while(fscanf(fp,"%d\t",&val)!=EOF){
         data.push_back(val);
     }
-    double s = 0.1;
-    double epsilon = 0.01;
+    double s = 0.01;
+    double epsilon = 0;
     Majority(data);
     vector<int> res;
     vector<int> bf = BruteFore(data,s);
