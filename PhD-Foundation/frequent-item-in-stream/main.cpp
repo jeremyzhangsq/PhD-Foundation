@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <list>
 #include <iterator>
+#include <algorithm>
 #include <unordered_set>
 
 using namespace std;
@@ -56,7 +57,7 @@ void Majority(vector<int> &arr){
 
 }
 
-void BruteFore(vector<int> &arr, double s){
+vector<int> BruteFore(vector<int> &arr, double s){
     unordered_map<int,int> dict;
     for(int val:arr){
         if(dict.count(val))
@@ -66,12 +67,16 @@ void BruteFore(vector<int> &arr, double s){
         }
     }
     printf("Brute Force Result:");
-    int k = (int)arr.size()*s;
+    vector<int> result;
+    int k = arr.size()*s;
     for(auto ele:dict){
-        if(ele.second>k)
+        if(ele.second>k){
             printf("%d\t",ele.first);
+            result.push_back(ele.first);
+        }
     }
     printf("\n");
+    return result;
 }
 
 list<Group>::iterator find(list<Group> &groups,int i){
@@ -92,14 +97,14 @@ void decrement(list<Group> &groups){
             first->delta--;
             if(!first->delta){
                 prev(first,1)->capacity=first->data.size();
-//                groups.erase(first);
+//                first->data.erase(first->data.begin(),first->data.end());
             }
             return;
         }
     }
 }
 
-void Frequent(vector<int> &arr, double s){
+vector<int> Frequent(vector<int> &arr, double s){
     int m = 1/s-1;
     int k = (int)arr.size()*s;
     int offset = 0;
@@ -144,17 +149,54 @@ void Frequent(vector<int> &arr, double s){
         }
     }
     printf("Frequent Counting Result:");
-    for(auto it = next(groups.begin(),k+offset);it!=groups.end();it++){
-        for(int ele: it->data){
-            printf("%d\t",ele);
+    vector<int> result;
+    if(groups.size()>=k+offset){
+        for(auto it = next(groups.begin(),k+offset-1);it!=groups.end();it++){
+            for(int ele: it->data){
+                printf("%d\t",ele);
+                result.push_back(ele);
+            }
         }
     }
     printf("\n");
+    return result;
 }
 
-void Lossy(vector<int> &arr, int k){
+vector<int> Lossy(vector<int> &arr, double s, double epsilon){
+    int n = 0;
+    int FREQ = 0;
+    int DELTA = 1;
+    unordered_map<int,int*> T;
+    int w = (int)ceil(1/epsilon);
+    int bcur = 0;
+    for(int &val:arr){
+        n++;
+        bcur = (int)ceil(n/w);
+        if(T.count(val))
+            T[val][FREQ]++;
+        else{
+            int tuple[2] = {1,bcur-1};
+            T.insert(make_pair(val,tuple));
+        }
+        if(n%w==0){
+            for(auto item:T){
+                if(item.second[FREQ]+item.second[DELTA]<bcur)
+                    T.erase(item.first);
+            }
+        }
+    }
+    printf("Lossy Counting Result:");
+    vector<int> result;
+    double k = arr.size()*(s-epsilon);
+    for(auto ele:T){
+        if(ele.second[FREQ]>k){
+            printf("%d\t",ele.first);
+            result.push_back(ele.first);
+        }
 
-
+    }
+    printf("\n");
+    return result;
 }
 int main() {
     FILE *fp;
@@ -165,10 +207,21 @@ int main() {
     while(fscanf(fp,"%d\t",&val)!=EOF){
         data.push_back(val);
     }
-    double s = 0.13;
+    double s = 0.1;
+    double epsilon = 0.01;
     Majority(data);
-    BruteFore(data,s);
-    Frequent(data,s);
+    vector<int> res;
+    vector<int> bf = BruteFore(data,s);
+    vector<int> fq = Frequent(data,s);
+    vector<int> ls = Lossy(data,s,epsilon);
+    sort(bf.begin(),bf.end());
+    sort(fq.begin(),fq.end());
+    sort(ls.begin(),ls.end());
+    set_intersection(bf.begin(),bf.end(),fq.begin(),fq.end(),back_inserter(res));
+    printf("BF accuracy:%.2f\n",(double)res.size()/bf.size());
+    vector<int>().swap(res);
+    set_intersection(bf.begin(),bf.end(),ls.begin(),ls.end(),back_inserter(res));
+    printf("LS accuracy:%.2f\n",(double)res.size()/ls.size());
     return 0;
 }
 
