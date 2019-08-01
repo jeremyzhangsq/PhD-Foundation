@@ -86,7 +86,7 @@ vector<int> BruteForce(vector<int> &arr, double s){
  * executing this algorithm with s = ε ensures that the count associated with each item on termination
  * is at most εn below the true value.
  * */
-vector<int> Frequent0(vector<int> &arr, double s){
+vector<int> FrequentbyMap(vector<int> &arr, double s){
     int m = 1/s-1;
     unordered_map<int,int> dict;
     for(int &ele:arr){
@@ -105,7 +105,7 @@ vector<int> Frequent0(vector<int> &arr, double s){
         }
     }
 
-    printf("Frequent0 Counting Result:");
+    printf("FrequentbyMap Counting Result:");
     vector<int> result;
     for(auto it:dict){
         printf("%d\t",it.first);
@@ -183,7 +183,7 @@ void replaceMin(list<Group> &groups){
 }
 
 
-vector<int> Frequent(vector<int> &arr, double s){
+vector<int> FrequentbyList(vector<int> &arr, double s){
     int m = 1/s-1;
     int k = (int)arr.size()*s;
     list<Group> groups;
@@ -208,7 +208,7 @@ vector<int> Frequent(vector<int> &arr, double s){
             decrement(groups);
         }
     }
-    printf("Frequent Counting Result:");
+    printf("FrequentbyList Counting Result:");
     vector<int> result;
     for(auto it = next(groups.begin(),1);it!=groups.end();it++){
         for(int ele: it->data){
@@ -223,7 +223,7 @@ vector<int> Frequent(vector<int> &arr, double s){
 
 
 
-vector<int> SpaceSaving(vector<int> &arr, double s){
+vector<int> SpaceSavingList(vector<int> &arr, double s){
     int m = 1/s;
     int k = (int)arr.size()*s;
     list<Group> groups;
@@ -241,14 +241,13 @@ vector<int> SpaceSaving(vector<int> &arr, double s){
         // the element is represented by a count
         if(g!=groups.end()){
             groupUpdate(groups, ele, g);
-
         }
         // replace val with min count
         else{
             replaceMin(groups);
         }
     }
-    printf("Space Saving Result:");
+    printf("SpaceSavingList Result:");
     vector<int> result;
     for(auto it = next(groups.begin(),1);it!=groups.end();it++){
         for(int ele: it->data){
@@ -260,7 +259,9 @@ vector<int> SpaceSaving(vector<int> &arr, double s){
     sort(result.begin(),result.end());
     return result;
 }
+vector<int> SpaceSavingHeap(vector<int> &arr, double s){
 
+}
 vector<int> Lossy(vector<int> &arr, double s, double epsilon){
     assert(epsilon<s);
     int n = 0;
@@ -322,10 +323,10 @@ int main() {
     Majority(data);
     vector<int> res;
     vector<int> bf = BruteForce(data, s);
-    vector<int> fq = Frequent(data,s);
-    vector<int> fq0 = Frequent0(data,s);
+    vector<int> fq = FrequentbyList(data, s);
+    vector<int> fq0 = FrequentbyMap(data, s);
     vector<int> ls = Lossy(data,s,epsilon);
-    vector<int> ss = SpaceSaving(data,s);
+    vector<int> ss = SpaceSavingList(data, s);
     set_intersection(bf.begin(),bf.end(),fq.begin(),fq.end(),back_inserter(res));
     printf("FQ accuracy:%.2f\n",(double)res.size()/bf.size());
     vector<int>().swap(res);
