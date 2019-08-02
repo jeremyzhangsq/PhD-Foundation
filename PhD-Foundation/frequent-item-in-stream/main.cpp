@@ -27,9 +27,6 @@ public:
     void add(int &i){
         data.insert(i);
     }
-    int get(int &i){
-        return *(data.find(i));
-    }
 };
 
 class heapCompare
@@ -98,6 +95,7 @@ vector<int> BruteForce(vector<int> &arr, double s){
 vector<int> FrequentbyMap(vector<int> &arr, double s){
     int m = 1/s-1;
     unordered_map<int,int> dict;
+    vector<int> todelete;
     for(int &ele:arr){
         if(dict.count(ele)){
             dict[ele]++;
@@ -109,8 +107,11 @@ vector<int> FrequentbyMap(vector<int> &arr, double s){
             for(auto &tuple:dict){
                 tuple.second--;
                 if(!tuple.second)
-                    dict.erase(tuple.first);
+                    todelete.push_back(tuple.first);
             }
+            for(int d:todelete)
+                dict.erase(d);
+            vector<int>().swap(todelete);
         }
     }
 
@@ -173,23 +174,6 @@ void decrement(list<Group> &groups){
         }
     }
 }
-void replaceMin(list<Group> &groups){
-    auto first = groups.begin();
-    for(;first!=groups.end();first++){
-        if(first->delta>=1 and !first->data.empty()){
-            int todel = *(first->data.begin());
-            groupUpdate(groups,todel,first);
-            if(first->data.empty()){
-                first->delta--;
-                if(!first->delta){
-                    groups.erase(first);
-                }
-            }
-            return;
-        }
-    }
-
-}
 
 
 vector<int> FrequentbyList(vector<int> &arr, double s){
@@ -230,38 +214,70 @@ vector<int> FrequentbyList(vector<int> &arr, double s){
     return result;
 }
 
+void summaryUpdate(list<Group> &groups, int &ele, list<Group>::iterator &g) {
+    auto nxt = next(g, 1);
+    g->data.erase(ele);
+    // move it to next group
+    if(nxt==groups.end()){
+        Group gc(g->delta+1);
+        gc.add(ele);
+        groups.push_back(gc);
+    }
+    else if(nxt->delta-g->delta>1) {
+        Group gc(g->delta+1);
+        gc.add(ele);
+        groups.insert(nxt, gc);
+    }else
+        nxt->data.insert(ele);
+}
 
+void replaceMin(list<Group> &groups, int &ele, unordered_map<int,int> &error){
+    auto first = groups.begin();
+    for(;first!=groups.end();first++){
+        if(first->delta>=1 and !first->data.empty()){
+            first->data.erase(first->data.begin());
+            error.insert(make_pair(ele,first->delta));
+            summaryUpdate(groups,ele,first);
+            return;
+        }
+    }
+
+}
 
 vector<int> SpaceSavingList(vector<int> &arr, double s){
     int m = 1/s;
     int k = (int)arr.size()*s;
+    unordered_map<int,int> error;
     list<Group> groups;
     Group g0(0,m);
     Group g1(k);
     // insert head and tail into list
     groups.push_back(g0);
-    groups.push_back(g1);
     for(int &ele:arr){
         auto g = find(groups,ele);
         // no count represents this element and some counts exist
         if(g==groups.end() and groups.front().delta == 0 and groups.front().capacity){
             groupInit(groups, ele, g);
+            error.insert(make_pair(ele,0));
         }
         // the element is represented by a count
         if(g!=groups.end()){
-            groupUpdate(groups, ele, g);
+            summaryUpdate(groups,ele,g);
         }
         // replace val with min count
         else{
-            replaceMin(groups);
+            replaceMin(groups,ele,error);
         }
     }
     printf("SpaceSavingList Result:");
     vector<int> result;
-    for(auto it = next(groups.begin(),1);it!=groups.end();it++){
+    for(auto it = next(groups.begin(),k+1);it!=groups.end();it++){
+        Group g = *it;
         for(int ele: it->data){
-            printf("%d\t",ele);
-            result.push_back(ele);
+            if(it->delta-error[ele]>k){
+                printf("%d\t",ele);
+                result.push_back(ele);
+            }
         }
     }
     printf("\n");
