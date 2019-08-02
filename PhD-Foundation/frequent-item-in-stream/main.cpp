@@ -6,6 +6,7 @@
 #include <list>
 #include <iterator>
 #include <algorithm>
+#include <queue>
 #include <unordered_set>
 
 using namespace std;
@@ -31,6 +32,14 @@ public:
     }
 };
 
+class heapCompare
+{
+public:
+    int operator() (const pair<int,int>& p1, const pair<int,int>& p2)
+    {
+        return p1.second > p2.second;
+    }
+};
 
 void Majority(vector<int> &arr){
     int count=0;
@@ -259,8 +268,59 @@ vector<int> SpaceSavingList(vector<int> &arr, double s){
     sort(result.begin(),result.end());
     return result;
 }
-vector<int> SpaceSavingHeap(vector<int> &arr, double s){
 
+
+vector<int> SpaceSavingHeap(vector<int> &arr, double s){
+    int m = 1/s;
+    int CNT = 0;
+    int EPS = 1;
+    unordered_map<int,int*> dict;
+    priority_queue<pair<int,int>,vector<pair<int,int>>,heapCompare> q;
+    for(int &ele:arr){
+        if(dict.count(ele)){
+            int* tuple = dict[ele];
+            tuple[CNT]++;
+        }
+        else if(dict.size()<m){
+            int* tuple = new int[2];
+            tuple[CNT] = 1;
+            tuple[EPS] = 0;
+            dict.insert(make_pair(ele,tuple));
+            q.push(make_pair(ele,1));
+        }
+        else{
+            // update the priority queue in a lazy manner
+            while(1){
+                pair<int,int> old = q.top();
+                int* cur = dict[old.first];
+                if(old.second == cur[CNT])
+                    break;
+                q.pop();
+                old.second = cur[CNT];
+                q.push(old);
+            }
+            pair<int,int> ap = q.top();
+            q.pop();
+            int* tuple = new int[2];
+            tuple[CNT] = ap.second+1;
+            tuple[EPS] = ap.second;
+            dict.erase(ap.first);
+            dict.insert(make_pair(ele,tuple));
+            q.push(make_pair(ele,ap.second+1));
+        }
+    }
+
+    printf("SpaceSavingHeap Counting Result:");
+    vector<int> result;
+    for(auto it:dict){
+        if(it.second[CNT]-it.second[EPS]>m){
+            printf("%d\t",it.first);
+            result.push_back(it.first);
+        }
+    }
+    printf("\n");
+    sort(result.begin(),result.end());
+    return result;
 }
 vector<int> Lossy(vector<int> &arr, double s, double epsilon){
     assert(epsilon<s);
@@ -327,6 +387,7 @@ int main() {
     vector<int> fq0 = FrequentbyMap(data, s);
     vector<int> ls = Lossy(data,s,epsilon);
     vector<int> ss = SpaceSavingList(data, s);
+    vector<int> ssh = SpaceSavingHeap(data, s);
     set_intersection(bf.begin(),bf.end(),fq.begin(),fq.end(),back_inserter(res));
     printf("FQ accuracy:%.2f\n",(double)res.size()/bf.size());
     vector<int>().swap(res);
@@ -337,7 +398,10 @@ int main() {
     printf("LS accuracy:%.2f\n",(double)res.size()/bf.size());
     vector<int>().swap(res);
     set_intersection(bf.begin(),bf.end(),ss.begin(),ss.end(),back_inserter(res));
-    printf("SS accuracy:%.2f\n",(double)res.size()/bf.size());
+    printf("SSL accuracy:%.2f\n",(double)res.size()/bf.size());
+    vector<int>().swap(res);
+    set_intersection(bf.begin(),bf.end(),ssh.begin(),ssh.end(),back_inserter(res));
+    printf("SSH accuracy:%.2f\n",(double)res.size()/bf.size());
     return 0;
 }
 
