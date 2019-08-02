@@ -3,4 +3,4 @@ project(frequent_item_in_stream)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(frequent_item_in_stream main.cpp)
+add_executable(frequent_item_in_stream main.cpp lib.h group.h group.cpp)

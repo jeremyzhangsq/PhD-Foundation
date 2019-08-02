@@ -1,42 +1,6 @@
-#include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <vector>
-#include <unordered_map>
-#include <list>
-#include <iterator>
-#include <algorithm>
-#include <queue>
-#include <unordered_set>
 
+#include "lib.h"
 using namespace std;
-
-class Group{
-public:
-    int delta;
-    int capacity;
-    unordered_set<int> data;
-    Group(int i,int j){
-        delta = i;
-        capacity = j;
-    }
-    Group(int i){
-        delta = i;
-        capacity = 0;
-    }
-    void add(int &i){
-        data.insert(i);
-    }
-};
-
-class heapCompare
-{
-public:
-    int operator() (const pair<int,int>& p1, const pair<int,int>& p2)
-    {
-        return p1.second > p2.second;
-    }
-};
 
 void Majority(vector<int> &arr){
     int count=0;
