@@ -16,6 +16,7 @@
 #include <queue>
 #include <unordered_set>
 #include "group.h"
+#include "function.h"
 using namespace std;
 
 #endif //FREQUENT_ITEM_IN_STREAM_LIB_H
