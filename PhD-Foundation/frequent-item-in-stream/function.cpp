@@ -163,7 +163,7 @@ vector<int> FrequentbyList(vector<int> &arr, double s){
             groupUpdate(groups, ele, g);
 
         }
-            // decrement
+        // decrement
         else{
             decrement(groups);
         }
@@ -346,6 +346,67 @@ vector<int> Lossy(vector<int> &arr, double s, double epsilon){
             result.push_back(ele.first);
         }
 
+    }
+    printf("\n");
+    sort(result.begin(),result.end());
+    return result;
+}
+
+int* getBuckethash(unordered_map<int,int*> &hs, int number, int element){
+    if(hs.count(element))
+        return hs[element];
+    int* result = new int[number];
+    return result;
+}
+int* getCounthash(unordered_map<int,int*> &ss, int number, int element){
+    if(ss.count(element))
+        return ss[element];
+    int* result = new int[number];
+    return result;
+}
+int getMedian(unordered_map<int,int*> &hs, int** C, int ele){
+    int* h = hs[ele];
+    vector<int> tmp;
+    int size = sizeof(C[0])/sizeof(C[0][0]);
+    for(int i = 0; i<size; i++){
+        tmp.push_back(C[i][h[i]]);
+    }
+    sort(tmp.begin(),tmp.end());
+    if (size % 2 == 0)
+        return (tmp[size/2-1]+tmp[size/2])/2;
+    else
+        return tmp[size/2];
+
+}
+vector<int> CountSketch(vector<int> &arr, int t, int b, double support){
+    int** C = new int*[t];// t*b matrix for counts
+    int* h;
+    int* s;
+    unordered_map<int,int*> hs;
+    unordered_map<int,int*> ss;
+    for(int i = 0;i<t;i++){
+        C[i] = new int[b];
+    }
+    for(int& ele:arr){
+        h = getBuckethash(hs,t,ele);
+        s = getCounthash(ss,t,ele);
+        // update count number in given buckets of tables
+        for(int i = 0;i<t;i++){
+            C[t][h[t]]+=s[t];
+        }
+    }
+    printf("Lossy Counting Result:");
+    vector<int> result;
+    int element;
+    int median;
+    int k = (int)(1/support);
+    for(auto ele:hs){
+        element = ele.first;
+        median = getMedian(hs,C,element);
+        if(median>k){
+            printf("%d\t",element);
+            result.push_back(element);
+        }
     }
     printf("\n");
     sort(result.begin(),result.end());

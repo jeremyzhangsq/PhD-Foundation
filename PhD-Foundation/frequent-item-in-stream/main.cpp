@@ -22,6 +22,7 @@ int main() {
     vector<int> ls = Lossy(data,s,epsilon);
     vector<int> ss = SpaceSavingList(data, s);
     vector<int> ssh = SpaceSavingHeap(data, s);
+    vector<int> cs = CountSketch(data, 10, 10, s);
     set_intersection(bf.begin(),bf.end(),fq.begin(),fq.end(),back_inserter(res));
     printf("FQ accuracy:%.2f\n",(double)res.size()/bf.size());
     vector<int>().swap(res);
@@ -36,6 +37,9 @@ int main() {
     vector<int>().swap(res);
     set_intersection(bf.begin(),bf.end(),ssh.begin(),ssh.end(),back_inserter(res));
     printf("SSH accuracy:%.2f\n",(double)res.size()/bf.size());
+    vector<int>().swap(res);
+    set_intersection(bf.begin(),bf.end(),cs.begin(),cs.end(),back_inserter(res));
+    printf("CS accuracy:%.2f\n",(double)res.size()/bf.size());
     return 0;
 }
 
