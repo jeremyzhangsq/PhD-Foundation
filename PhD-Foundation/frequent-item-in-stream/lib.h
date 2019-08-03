@@ -5,6 +5,8 @@
 #ifndef FREQUENT_ITEM_IN_STREAM_LIB_H
 #define FREQUENT_ITEM_IN_STREAM_LIB_H
 
+#define HL 31;
+#define MOD 2147483647;
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>

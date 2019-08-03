@@ -352,22 +352,46 @@ vector<int> Lossy(vector<int> &arr, double s, double epsilon){
     return result;
 }
 
-int* getBuckethash(unordered_map<int,int*> &hs, int number, int element){
+long hash15(long long a, long long b, int x)
+{
+
+    long long result;
+    long lresult;
+    long tmp;
+    result=(a * x) + b;
+    tmp = result >> HL;
+    result = (tmp + result) & MOD;
+    lresult=(long) result;
+
+    return lresult;
+}
+
+void initHash(vector<int> &hasht, vector<int> &hashb, int size){
+
+    for(int i = 0; i<size; i++){
+        hasht[i]=rand();
+        hashb[i]=rand();
+    }
+
+}
+
+vector<int> getHash(unordered_map<int,vector<int>> &hs, vector<int> &hasht, vector<int> &hashb, int element, int width){
     if(hs.count(element))
         return hs[element];
-    int* result = new int[number];
+    vector<int> result;
+    int tmp;
+    for(int i = 0;i < hasht.size();i++){
+        tmp = hash15(hasht[i],hashb[i],element);
+        result.push_back(tmp%width);
+    }
+    hs.insert(make_pair(element,result));
     return result;
 }
-int* getCounthash(unordered_map<int,int*> &ss, int number, int element){
-    if(ss.count(element))
-        return ss[element];
-    int* result = new int[number];
-    return result;
-}
-int getMedian(unordered_map<int,int*> &hs, int** C, int ele){
-    int* h = hs[ele];
+
+int getMedian(unordered_map<int,vector<int>> &hs, vector<vector<int>> &C, int ele){
+    vector<int> h = hs[ele];
     vector<int> tmp;
-    int size = sizeof(C[0])/sizeof(C[0][0]);
+    int size = C.size();
     for(int i = 0; i<size; i++){
         tmp.push_back(C[i][h[i]]);
     }
@@ -379,23 +403,26 @@ int getMedian(unordered_map<int,int*> &hs, int** C, int ele){
 
 }
 vector<int> CountSketch(vector<int> &arr, int t, int b, double support){
-    int** C = new int*[t];// t*b matrix for counts
-    int* h;
-    int* s;
-    unordered_map<int,int*> hs;
-    unordered_map<int,int*> ss;
-    for(int i = 0;i<t;i++){
-        C[i] = new int[b];
-    }
+    vector<vector<int>> C(t,vector<int>(b,0));// t*b matrix for counts
+    vector<int> hasht(t,0);
+    vector<int> hashb(t,0);
+    unordered_map<int,vector<int>> ss;
+    unordered_map<int,vector<int>> hs;
+    vector<int> h;
+    vector<int> s;
+    initHash(hasht,hashb,t);
     for(int& ele:arr){
-        h = getBuckethash(hs,t,ele);
-        s = getCounthash(ss,t,ele);
+        h = getHash(hs,hasht,hashb,ele,b);
+        s = getHash(ss,hasht,hashb,ele,2);
         // update count number in given buckets of tables
         for(int i = 0;i<t;i++){
-            C[t][h[t]]+=s[t];
+            if(s[i])
+                C[i][h[i]]+=1;
+            else
+                C[i][h[i]]-=1;
         }
     }
-    printf("Lossy Counting Result:");
+    printf("Count Sketch Result:");
     vector<int> result;
     int element;
     int median;
