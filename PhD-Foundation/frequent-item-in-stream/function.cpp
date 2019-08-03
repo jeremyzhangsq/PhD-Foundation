@@ -255,19 +255,17 @@ vector<int> SpaceSavingList(vector<int> &arr, double s){
 
 vector<int> SpaceSavingHeap(vector<int> &arr, double s){
     int m = 1/s;
-    int CNT = 0;
-    int EPS = 1;
-    unordered_map<int,int*> dict;
+    unordered_map<int,pair<int,int>> dict;
     priority_queue<pair<int,int>,vector<pair<int,int>>,heapCompare> q;
     for(int &ele:arr){
         if(dict.count(ele)){
-            int* tuple = dict[ele];
-            tuple[CNT]++;
+            pair<int,int> &tuple = dict[ele];
+            tuple.first=tuple.first+1;
         }
         else if(dict.size()<m){
-            int* tuple = new int[2];
-            tuple[CNT] = 1;
-            tuple[EPS] = 0;
+            pair<int,int> tuple;
+            tuple.first = 1;
+            tuple.second = 0;
             dict.insert(make_pair(ele,tuple));
             q.push(make_pair(ele,1));
         }
@@ -275,18 +273,18 @@ vector<int> SpaceSavingHeap(vector<int> &arr, double s){
             // update the priority queue in a lazy manner
             while(1){
                 pair<int,int> old = q.top();
-                int* cur = dict[old.first];
-                if(old.second == cur[CNT])
+                pair<int,int> cur = dict[old.first];
+                if(old.second == cur.first)
                     break;
                 q.pop();
-                old.second = cur[CNT];
+                old.second = cur.first;
                 q.push(old);
             }
             pair<int,int> ap = q.top();
             q.pop();
-            int* tuple = new int[2];
-            tuple[CNT] = ap.second+1;
-            tuple[EPS] = ap.second;
+            pair<int,int> tuple;
+            tuple.first = ap.second+1;
+            tuple.second = ap.second;
             dict.erase(ap.first);
             dict.insert(make_pair(ele,tuple));
             q.push(make_pair(ele,ap.second+1));
@@ -294,9 +292,10 @@ vector<int> SpaceSavingHeap(vector<int> &arr, double s){
     }
 
     printf("SpaceSavingHeap Counting Result:");
+    int k = arr.size()*s;
     vector<int> result;
     for(auto it:dict){
-        if(it.second[CNT]-it.second[EPS]>m){
+        if(it.second.first-it.second.second>k){
             printf("%d\t",it.first);
             result.push_back(it.first);
         }
@@ -402,20 +401,20 @@ int getMedian(unordered_map<int,vector<int>> &hs, vector<vector<int>> &C, int el
         return tmp[size/2];
 
 }
-vector<int> CountSketch(vector<int> &arr, int t, int b, double support){
-    vector<vector<int>> C(t,vector<int>(b,0));// t*b matrix for counts
-    vector<int> hasht(t,0);
-    vector<int> hashb(t,0);
+vector<int> CountSketch(vector<int> &arr, int d, int w, double support){
+    vector<vector<int>> C(d,vector<int>(w,0));// d*w matrix for counts
+    vector<int> hasht(d,0);
+    vector<int> hashb(d,0);
     unordered_map<int,vector<int>> ss;
     unordered_map<int,vector<int>> hs;
     vector<int> h;
     vector<int> s;
-    initHash(hasht,hashb,t);
+    initHash(hasht,hashb,d);
     for(int& ele:arr){
-        h = getHash(hs,hasht,hashb,ele,b);
+        h = getHash(hs,hasht,hashb,ele,w);
         s = getHash(ss,hasht,hashb,ele,2);
         // update count number in given buckets of tables
-        for(int i = 0;i<t;i++){
+        for(int i = 0;i<d;i++){
             if(s[i])
                 C[i][h[i]]+=1;
             else

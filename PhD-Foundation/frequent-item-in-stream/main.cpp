@@ -12,8 +12,8 @@ int main() {
     while(fscanf(fp,"%d\t",&val)!=EOF){
         data.push_back(val);
     }
-    double s = 0.01;
-    double epsilon = 0.00001;
+    double s = 0.001;
+    double epsilon = 0.0001;
     Majority(data);
     vector<int> res;
     vector<int> bf = BruteForce(data, s);
@@ -22,7 +22,7 @@ int main() {
     vector<int> ls = Lossy(data,s,epsilon);
     vector<int> ss = SpaceSavingList(data, s);
     vector<int> ssh = SpaceSavingHeap(data, s);
-    vector<int> cs = CountSketch(data, 10, 10, s);
+    vector<int> cs = CountSketch(data, 4, (int)(2/s) , s);
     set_intersection(bf.begin(),bf.end(),fq.begin(),fq.end(),back_inserter(res));
     printf("FQ accuracy:%.2f\n",(double)res.size()/bf.size());
     vector<int>().swap(res);
