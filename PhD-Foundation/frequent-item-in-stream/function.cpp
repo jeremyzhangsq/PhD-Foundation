@@ -389,7 +389,17 @@ int getMedian(unordered_map<int,vector<int>> &hs, vector<vector<int>> &C, int el
         return tmp[size/2];
 
 }
-vector<int> CountSketch(vector<int> &arr, int d, int w, double support){
+int getMin(unordered_map<int,vector<int>> &hs, vector<vector<int>> &C, int ele){
+    vector<int> h = hs[ele];
+    int min = RAND_MAX;
+    int size = C.size();
+    for(int i = 0; i<size; i++){
+        min = min<C[i][h[i]]?min:C[i][h[i]];
+    }
+    return min;
+
+}
+vector<int> CountSketch(vector<int> &arr, int d, int w, double support, double epsilon){
     vector<vector<int>> C(d,vector<int>(w,0));// d*w matrix for counts
     vector<int> hasht(d,0);
     vector<int> hashb(d,0);
@@ -401,23 +411,57 @@ vector<int> CountSketch(vector<int> &arr, int d, int w, double support){
     for(int& ele:arr){
         h = getHash(hs,hasht,hashb,ele,w);
         s = getHash(ss,hasht,hashb,ele,2);
-        // update count number in given buckets of tables
+        // update count number in given buckets of table
+        double rate=0;
         for(int i = 0;i<d;i++){
+            rate+=s[i];
             if(s[i])
                 C[i][h[i]]+=1;
             else
                 C[i][h[i]]-=1;
         }
+//        printf("ratio of 1 for element %d:%.2f\n",ele,rate/s.size());
     }
     printf("Count Sketch Result:");
     vector<int> result;
     int element;
     int median;
-    int k = (int)(1/support);
+    double k = arr.size()*(support-epsilon);
     for(auto ele:hs){
         element = ele.first;
         median = getMedian(hs,C,element);
-        if(median>k){
+        if(median > k){
+            printf("%d\t",element);
+            result.push_back(element);
+        }
+    }
+    printf("\n");
+    sort(result.begin(),result.end());
+    return result;
+}
+vector<int> CountMinSketch(vector<int> &arr, int d, int w, double support, double epsilon){
+    vector<vector<int>> C(d,vector<int>(w,0));// d*w matrix for counts
+    vector<int> hasht(d,0);
+    vector<int> hashb(d,0);
+    unordered_map<int,vector<int>> hs;
+    vector<int> h;
+    initHash(hasht,hashb,1,d);
+    for(int& ele:arr){
+        h = getHash(hs,hasht,hashb,ele,w);
+        // update count number in given buckets of table
+        for(int i = 0;i<d;i++){
+            C[i][h[i]]+=1;
+        }
+    }
+    printf("Count Min Sketch Result:");
+    vector<int> result;
+    int element;
+    int min;
+    double k = arr.size()*(support-epsilon);
+    for(auto ele:hs){
+        element = ele.first;
+        min = getMin(hs,C,element);
+        if(min > k){
             printf("%d\t",element);
             result.push_back(element);
         }
