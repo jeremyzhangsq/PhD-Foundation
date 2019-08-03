@@ -5,14 +5,14 @@ using namespace std;
 
 int main() {
     FILE *fp;
-    char* file = "/Users/jeremy/Documents/PhD-Foundation/frequent-item-in-stream/record.txt";
+    char* file = (char*)"/Users/jeremy/Documents/PhD-Foundation/frequent-item-in-stream/record.txt";
     fp = fopen(file,"r");
     vector<int> data;
     int val;
     while(fscanf(fp,"%d\t",&val)!=EOF){
         data.push_back(val);
     }
-    double s = 0.001;
+    double s = 0.01;
     double epsilon = 0.0001;
     Majority(data);
     vector<int> res;

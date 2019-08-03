@@ -351,25 +351,13 @@ vector<int> Lossy(vector<int> &arr, double s, double epsilon){
     return result;
 }
 
-long hash15(long long a, long long b, int x)
-{
 
-    long long result;
-    long lresult;
-    long tmp;
-    result=(a * x) + b;
-    tmp = result >> HL;
-    result = (tmp + result) & MOD;
-    lresult=(long) result;
-
-    return lresult;
-}
-
-void initHash(vector<int> &hasht, vector<int> &hashb, int size){
-
+void initHash(vector<int> &hasht, vector<int> &hashb, int seed, int size){
+    prng_type * prng;
+    prng=prng_Init(-abs(seed),2);
     for(int i = 0; i<size; i++){
-        hasht[i]=rand();
-        hashb[i]=rand();
+        hasht[i]=prng_int(prng) & MOD;
+        hashb[i]=prng_int(prng) & MOD;
     }
 
 }
@@ -380,7 +368,7 @@ vector<int> getHash(unordered_map<int,vector<int>> &hs, vector<int> &hasht, vect
     vector<int> result;
     int tmp;
     for(int i = 0;i < hasht.size();i++){
-        tmp = hash15(hasht[i],hashb[i],element);
+        tmp = hash31(hasht[i],hashb[i],element);
         result.push_back(tmp%width);
     }
     hs.insert(make_pair(element,result));
@@ -409,7 +397,7 @@ vector<int> CountSketch(vector<int> &arr, int d, int w, double support){
     unordered_map<int,vector<int>> hs;
     vector<int> h;
     vector<int> s;
-    initHash(hasht,hashb,d);
+    initHash(hasht,hashb,1,d);
     for(int& ele:arr){
         h = getHash(hs,hasht,hashb,ele,w);
         s = getHash(ss,hasht,hashb,ele,2);
