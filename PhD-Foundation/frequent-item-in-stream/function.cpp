@@ -430,7 +430,7 @@ vector<int> CountSketch(vector<int> &arr, int d, int w, double support, double e
     for(auto ele:hs){
         element = ele.first;
         median = getMedian(hs,C,element);
-        if(median > k){
+        if(abs(median) > k){
             printf("%d\t",element);
             result.push_back(element);
         }

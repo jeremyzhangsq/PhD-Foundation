@@ -13,7 +13,7 @@ int main() {
         data.push_back(val);
     }
     double s = 0.01;
-    double epsilon = 0.0001;
+    double epsilon = 0.001;
     Majority(data);
     vector<int> res;
     vector<int> bf = BruteForce(data, s);
