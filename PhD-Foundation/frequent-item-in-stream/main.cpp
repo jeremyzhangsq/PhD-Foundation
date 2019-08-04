@@ -27,6 +27,8 @@ int main() {
     printf("SSL recall:%.2f\n",printRecall(bf,ss));
     vector<int> ssh = SpaceSavingHeap(data, s);
     printf("SSH recall:%.2f\n",printRecall(bf,ssh));
+    vector<int> gk = GK(data, s, epsilon);
+    printf("GK recall:%.2f\n",printRecall(bf,gk));
     vector<int> cs = CountSketch(data, int(log(4/0.05)), (int)(2/(epsilon*epsilon)), s, epsilon);
     printf("CS recall:%.2f\n",printRecall(bf,cs));
     vector<int> cms = CountMinSketch(data, int(log(4/0.05)), (int)(2/(epsilon*epsilon)), s, epsilon);

@@ -345,6 +345,50 @@ vector<int> Lossy(vector<int> &arr, double s, double epsilon){
     return result;
 }
 
+vector<int> GK(vector<int> &arr, double s, double epsilon){
+    set<int> elements;
+    unordered_map<int,pair<int,int>> summary;
+    int delta;
+    int n = 1;
+    for(int &ele : arr){
+        // insert
+        if(!elements.count(ele)){
+            auto it = elements.insert(ele);
+            pair<int,int> smy;
+            smy.first = 1;
+            if(it.first==elements.begin() or it.first == prev(elements.end(),1))
+                smy.second=0;
+            else{
+                delta = (int)floor(2*n*epsilon);
+                smy.second=delta;
+            }
+            summary.insert(make_pair(ele,smy));
+        }
+        else{
+            pair<int,int> &smy = summary[ele];
+            smy.first++;
+        }
+        n++;
+    }
+
+    int r = (int)ceil(arr.size()*s);
+    int lower=0;
+    int upper=0;
+    double d = floor(arr.size()*epsilon);
+    vector<int> result;
+    printf("GK Result:");
+    for(auto it = elements.begin();it!=prev(elements.end(),1);it++){
+        int ele = *next(it,1);
+        lower=summary[ele].first;
+        upper=lower+summary[ele].second;
+        if(r-lower<=d and upper-r<=d){
+            printf("%d\t",*it);
+            result.push_back(*it);
+        }
+    }
+    printf("\n");
+    return result;
+}
 
 void initHash(vector<int> &hasht, vector<int> &hashb, int seed, int size){
     prng_type * prng;

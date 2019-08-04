@@ -34,6 +34,7 @@
 #include <iterator>
 #include <algorithm>
 #include <queue>
+#include <set>
 #include <unordered_set>
 #include "group.h"
 #include "function.h"
