@@ -51,7 +51,6 @@ vector<int> BruteForce(vector<int> &arr, double s){
         }
     }
     printf("\n");
-    sort(result.begin(),result.end());
     return result;
 }
 
@@ -89,7 +88,6 @@ vector<int> FrequentbyMap(vector<int> &arr, double s){
         result.push_back(it.first);
     }
     printf("\n");
-    sort(result.begin(),result.end());
     return result;
 }
 
@@ -177,7 +175,6 @@ vector<int> FrequentbyList(vector<int> &arr, double s){
         }
     }
     printf("\n");
-    sort(result.begin(),result.end());
     return result;
 }
 
@@ -248,7 +245,6 @@ vector<int> SpaceSavingList(vector<int> &arr, double s){
         }
     }
     printf("\n");
-    sort(result.begin(),result.end());
     return result;
 }
 
@@ -301,7 +297,6 @@ vector<int> SpaceSavingHeap(vector<int> &arr, double s){
         }
     }
     printf("\n");
-    sort(result.begin(),result.end());
     return result;
 }
 vector<int> Lossy(vector<int> &arr, double s, double epsilon){
@@ -347,7 +342,6 @@ vector<int> Lossy(vector<int> &arr, double s, double epsilon){
 
     }
     printf("\n");
-    sort(result.begin(),result.end());
     return result;
 }
 
@@ -436,7 +430,6 @@ vector<int> CountSketch(vector<int> &arr, int d, int w, double support, double e
         }
     }
     printf("\n");
-    sort(result.begin(),result.end());
     return result;
 }
 vector<int> CountMinSketch(vector<int> &arr, int d, int w, double support, double epsilon){
@@ -467,6 +460,17 @@ vector<int> CountMinSketch(vector<int> &arr, int d, int w, double support, doubl
         }
     }
     printf("\n");
-    sort(result.begin(),result.end());
     return result;
+}
+double printRecall(vector<int> &tc, vector<int> &pc){
+    sort(tc.begin(),tc.end());
+    sort(pc.begin(),pc.end());
+    vector<int> tp;
+    vector<int> fn;
+    set_intersection(tc.begin(),tc.end(),pc.begin(),pc.end(),back_inserter(tp));
+    set_difference(tc.begin(),tc.end(),tp.begin(),tp.end(),back_inserter(fn));
+    double recall = tp.size()/(double)(fn.size()+tp.size());
+    vector<int>().swap(tp);
+    vector<int>().swap(fn);
+    return recall;
 }
