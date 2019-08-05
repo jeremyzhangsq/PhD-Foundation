@@ -345,45 +345,76 @@ vector<int> Lossy(vector<int> &arr, double s, double epsilon){
     return result;
 }
 
-vector<int> GK(vector<int> &arr, double s, double epsilon){
-    set<int> elements;
-    unordered_map<int,pair<int,int>> summary;
-    int delta;
-    int n = 1;
-    for(int &ele : arr){
-        // insert
-        if(!elements.count(ele)){
-            auto it = elements.insert(ele);
-            pair<int,int> smy;
-            smy.first = 1;
-            if(it.first==elements.begin() or it.first == prev(elements.end(),1))
-                smy.second=0;
-            else{
-                delta = (int)floor(2*n*epsilon);
-                smy.second=delta;
-            }
-            summary.insert(make_pair(ele,smy));
-        }
-        else{
-            pair<int,int> &smy = summary[ele];
-            smy.first++;
-        }
-        n++;
+int getNewdelta(Tuple &next, double epsilon, int n){
+
+
+    double range = floor(2.0 * epsilon * n);
+
+    if (next.delta + next.g - 1 >= 0) {
+        return (next.delta + next.g -1);
     }
 
-    int r = (int)ceil(arr.size()*s);
-    int lower=0;
-    int upper=0;
-    double d = floor(arr.size()*epsilon);
+    return (int)range;
+}
+void insert(set<Tuple> &Summary, int ele, double epsilon, int n){
+    if(Summary.empty()){
+        Tuple t(ele,0);
+        Summary.insert(t);
+    }
+    else{
+        Tuple first = *(Summary.begin());
+        Tuple last = *(prev(Summary.end(),1));
+        int d;
+        if(ele<first.ele){
+            d = 0;
+            Tuple t(ele,d);
+            Summary.insert(Summary.begin(),t);
+        }
+        else if(ele>last.ele){
+            d = 0;
+            Tuple t(ele,d);
+            Summary.insert(prev(Summary.end(),1),t);
+        }
+        else if(ele==last.ele){
+            d = getNewdelta(last,epsilon,n);
+            Tuple t(ele,d);
+            Summary.insert(prev(Summary.end(),1),t);
+        }
+        else{
+            d = (int)(floor(2*n*epsilon));
+            Tuple t(ele,d);
+            Summary.insert(Summary.begin(),t);
+        }
+    }
+}
+
+vector<int> GK(vector<int> &arr, double s, double epsilon){
+    set<Tuple> Summary;
+    int n = 1;
+    for(int &ele : arr){
+        insert(Summary,ele,epsilon,n);
+        n++;
+    }
     vector<int> result;
     printf("GK Result:");
-    for(auto it = elements.begin();it!=prev(elements.end(),1);it++){
-        int ele = *next(it,1);
-        lower=summary[ele].first;
-        upper=lower+summary[ele].second;
-        if(r-lower<=d and upper-r<=d){
-            printf("%d\t",*it);
-            result.push_back(*it);
+    int cur = (*Summary.begin()).ele;
+    int low = 0;
+    int up = 0;
+    int r = (int)ceil(s*n);
+    double delta = epsilon*n;
+    for(auto &e:Summary){
+        if(e.ele==cur){
+            low+=e.g;
+            up=low+e.delta;
+        }
+        else{
+            if(up>r){
+                printf("%d\t",cur);
+                result.push_back(cur);
+            }
+            cur = e.ele;
+            low = 0;
+            up = 0;
         }
     }
     printf("\n");

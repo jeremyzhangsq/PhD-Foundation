@@ -25,4 +25,13 @@ public:
     int operator() (const pair<int,int>& p1, const pair<int,int>& p2);
 };
 
+class Tuple{
+public:
+    int ele;
+    int g;
+    int delta;
+    Tuple(int val, int d);
+    bool operator< (const Tuple &right) const;
+
+};
 #endif //FREQUENT_ITEM_IN_STREAM_GROUP_H
