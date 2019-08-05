@@ -41,7 +41,8 @@
 
 	3. Quantile-based Algorithm
 		- **[GK Algorithm](https://github.com/jeremyzhangsq/PhD-Foundation/blob/master/PhD-Foundation/frequent-item-in-stream/paper/gk.pdf)** implemented in `GK()` and the [note](http://www.mathcs.emory.edu/~cheung/Courses/584-StreamDB/Syllabus/08-Quantile/Greenwald.html#proofprop1) helps a lot.
-
+		- **[QDigest Algorithm](https://github.com/jeremyzhangsq/PhD-Foundation/blob/master/PhD-Foundation/frequent-item-in-stream/paper/qdigest.pdf)** implemented in `QDigest()` by complete binary tree.
+    
 	4. Sketch-based Algorithm
 		- **[Count Sketch Algorithm](https://github.com/jeremyzhangsq/PhD-Foundation/blob/master/PhD-Foundation/frequent-item-in-stream/paper/countsketch.pdf)** implemented in `CountSketch()`
 
