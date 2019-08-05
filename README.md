@@ -18,9 +18,7 @@
 
 ### The source codes of implemented **Disjoint Set Data Structure** and **Kruskal's Algorithm** are in [kruskal.cpp](PhD-Foundation/minimum-spanning-tree/kruskal.cpp)
 
-#### Disjoint Set Data Structure is implemented by:
-  **1. linked list**
-  **2. tree**
+#### Disjoint Set Data Structure is implemented by **linked list** and ** tree**
 
 ### The source codes of implemented **Prim's Algorithm** are in [prim.cpp](PhD-Foundation/minimum-spanning-tree/prim.cpp)
 
@@ -37,15 +35,20 @@
 #### 2. Count-based Algorithm:
 
 (a). **[Frequent Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/frequent)** implemented by group linked list `FrequentbyList()` and hash table `FrequentbyMap()`.
+
 (b). **[Loosy Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/loosy)** implemented in `Loosy()`.
+
 (c). **[Space Saving Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/spacesaving)** implemented by group linked list `SpaceSavingbyList()` and heap `SpaceSavingbyHeap()`.
 
 #### 3. Quantile-based Algorithm
-(a). **[GK Algorithm](PhD-Foundation/frequent-item-in-stream/paper/gk)** implemented in `GK()`
+(a). **[GK Algorithm](PhD-Foundation/frequent-item-in-stream/paper/gk)** implemented in `GK()` and the [note](http://www.mathcs.emory.edu/~cheung/Courses/584-StreamDB/Syllabus/08-Quantile/Greenwald.html#proofprop1) helps a lot.
 
 #### 4. Sketch-based Algorithm
 (a). **[Count Sketch Algorithm](PhD-Foundation/frequent-item-in-stream/paper/countsketch)** implemented in `CountSketch()`
-(a). **[Count Min Sketch Algorithm](PhD-Foundation/frequent-item-in-stream/paper/countminsketch)** implemented in `CountSketch()`
+
+(b). **[Count Min Sketch Algorithm](PhD-Foundation/frequent-item-in-stream/paper/countminsketch)** implemented in `CountSketch()`
+
+### Function [prng.cpp](PhD-Foundation/frequent-item-in-stream/prng.cpp) is a probabilistic random number generator, which is refered from the [code bank](https://www.cs.rutgers.edu/~muthu/massdal-code-index.html).
 
 
 
