@@ -33,19 +33,19 @@
 	1. Majority Voting Algorithm
 	2. Count-based Algorithm:
 
-		- **[Frequent Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/frequent.pdf)** implemented by group linked list `FrequentbyList()` and hash table `FrequentbyMap()`.
+		- **[Frequent Count Algorithm](https://github.com/jeremyzhangsq/PhD-Foundation/blob/master/PhD-Foundation/frequent-item-in-stream/paper/frequent.pdf)** implemented by group linked list `FrequentbyList()` and hash table `FrequentbyMap()`.
 
-		- **[Loosy Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/loosy.pdf)** implemented in `Loosy()`.
+		- **[Loosy Count Algorithm](https://github.com/jeremyzhangsq/PhD-Foundation/blob/master/PhD-Foundation/frequent-item-in-stream/paper/loosy.pdf)** implemented in `Loosy()`.
 
-		- **[Space Saving Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/spacesaving.pdf)** implemented by group linked list `SpaceSavingbyList()` and heap `SpaceSavingbyHeap()`.
+		- **[Space Saving Count Algorithm](https://github.com/jeremyzhangsq/PhD-Foundation/blob/master/PhD-Foundation/frequent-item-in-stream/paper/spacesaving.pdf)** implemented by group linked list `SpaceSavingbyList()` and heap `SpaceSavingbyHeap()`.
 
 	3. Quantile-based Algorithm
-		- **[GK Algorithm](PhD-Foundation/frequent-item-in-stream/paper/gk.pdf)** implemented in `GK()` and the [note](http://www.mathcs.emory.edu/~cheung/Courses/584-StreamDB/Syllabus/08-Quantile/Greenwald.html#proofprop1) helps a lot.
+		- **[GK Algorithm](https://github.com/jeremyzhangsq/PhD-Foundation/blob/master/PhD-Foundation/frequent-item-in-stream/paper/gk.pdf)** implemented in `GK()` and the [note](http://www.mathcs.emory.edu/~cheung/Courses/584-StreamDB/Syllabus/08-Quantile/Greenwald.html#proofprop1) helps a lot.
 
 	4. Sketch-based Algorithm
-		- **[Count Sketch Algorithm](PhD-Foundation/frequent-item-in-stream/paper/countsketch.pdf)** implemented in `CountSketch()`
+		- **[Count Sketch Algorithm](https://github.com/jeremyzhangsq/PhD-Foundation/blob/master/PhD-Foundation/frequent-item-in-stream/paper/countsketch.pdf)** implemented in `CountSketch()`
 
-		- **[Count Min Sketch Algorithm](PhD-Foundation/frequent-item-in-stream/paper/countminsketch.pdf)** implemented in `CountSketch()`
+		- **[Count Min Sketch Algorithm](https://github.com/jeremyzhangsq/PhD-Foundation/blob/master/PhD-Foundation/frequent-item-in-stream/paper/countminsketch.pdf)** implemented in `CountSketch()`
 
 - Function [prng.cpp](PhD-Foundation/frequent-item-in-stream/prng.cpp) is a probabilistic random number generator, which is refered from the [code bank](https://www.cs.rutgers.edu/~muthu/massdal-code-index.html).
 
