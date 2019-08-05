@@ -453,6 +453,55 @@ vector<int> GK(vector<int> &arr, double s, double epsilon){
     return result;
 }
 
+pair<int,int> getChild(int parent){
+    return make_pair(2*parent+1,2*parent+2);
+}
+vector<int> getElement(int level){
+    vector<int> result;
+    int left = (int)pow(2,level)-1;
+    int right = (int)pow(2,level+1)-1;
+    for(int i = left;i<right;i++){
+        result.push_back(i);
+    }
+    return result;
+}
+vector<int> QDigest(vector<int> &arr, double s, double epsilon){
+    vector<int> cnt2(arr.size());
+    unordered_set<int> diversity;
+    double threshold = arr.size()*epsilon;
+    for(int ele:arr){
+        cnt2[ele]++;
+        diversity.insert(ele);
+    }
+    int size = (int)pow(2,ceil(log2(diversity.size())));
+    cnt2.resize(size);
+    vector<int> cnt(size-1);
+    cnt.insert(cnt.end(),cnt2.begin(),cnt2.end());
+    int level = (int)log2(size)-1;
+    while(level>0){
+        vector<int> elements = getElement(level);
+        for(int e:elements){
+            pair<int,int> child = getChild(e);
+            if(cnt[child.first]+cnt[child.second]<threshold){
+                cnt[e] = cnt[child.first]+cnt[child.second];
+                cnt[child.first] = 0;
+                cnt[child.second] = 0;
+            }
+        }
+        level--;
+    }
+    vector<int> result;
+    printf("QDigest Result:");
+    for(int ele:getElement((int)log2(size))){
+        if (cnt[ele]>arr.size()*(s-epsilon)){
+            printf("%d\t",ele);
+            result.push_back(ele);
+        }
+    }
+    printf("\n");
+    return result;
+}
+
 void initHash(vector<int> &hasht, vector<int> &hashb, int seed, int size){
     prng_type * prng;
     prng=prng_Init(-abs(seed),2);
