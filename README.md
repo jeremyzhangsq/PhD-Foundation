@@ -26,26 +26,26 @@
 
 ## [Frequent Item in Data Streaming](PhD-Foundation/frequent-item-in-stream/)
 
-- The original survey paper is in [link](http://delivery.acm.org/10.1145/1460000/1454225/p1530-cormode.pdf?ip=137.132.216.137&id=1454225&acc=ACTIVE%20SERVICE&key=FF6731C4D3E3CFFF%2EBB5EB8D2067C1662%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&__acm__=1564969963_b64b1e518a3ff38bb9e3408fcbe4e199)
+- The original survey paper is in [link](https://dl.acm.org/citation.cfm?id=1454225)
 
 - In [function.cpp](PhD-Foundation/frequent-item-in-stream/function.cpp), the following algorithms are implemented:
 
 	1. Majority Voting Algorithm
 	2. Count-based Algorithm:
 
-		- **[Frequent Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/frequent)** implemented by group linked list `FrequentbyList()` and hash table `FrequentbyMap()`.
+		- **[Frequent Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/frequent.pdf)** implemented by group linked list `FrequentbyList()` and hash table `FrequentbyMap()`.
 
-		- **[Loosy Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/loosy)** implemented in `Loosy()`.
+		- **[Loosy Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/loosy.pdf)** implemented in `Loosy()`.
 
-		- **[Space Saving Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/spacesaving)** implemented by group linked list `SpaceSavingbyList()` and heap `SpaceSavingbyHeap()`.
+		- **[Space Saving Count Algorithm](PhD-Foundation/frequent-item-in-stream/paper/spacesaving.pdf)** implemented by group linked list `SpaceSavingbyList()` and heap `SpaceSavingbyHeap()`.
 
 	3. Quantile-based Algorithm
-		- **[GK Algorithm](PhD-Foundation/frequent-item-in-stream/paper/gk)** implemented in `GK()` and the [note](http://www.mathcs.emory.edu/~cheung/Courses/584-StreamDB/Syllabus/08-Quantile/Greenwald.html#proofprop1) helps a lot.
+		- **[GK Algorithm](PhD-Foundation/frequent-item-in-stream/paper/gk.pdf)** implemented in `GK()` and the [note](http://www.mathcs.emory.edu/~cheung/Courses/584-StreamDB/Syllabus/08-Quantile/Greenwald.html#proofprop1) helps a lot.
 
 	4. Sketch-based Algorithm
-		- **[Count Sketch Algorithm](PhD-Foundation/frequent-item-in-stream/paper/countsketch)** implemented in `CountSketch()`
+		- **[Count Sketch Algorithm](PhD-Foundation/frequent-item-in-stream/paper/countsketch.pdf)** implemented in `CountSketch()`
 
-		- **[Count Min Sketch Algorithm](PhD-Foundation/frequent-item-in-stream/paper/countminsketch)** implemented in `CountSketch()`
+		- **[Count Min Sketch Algorithm](PhD-Foundation/frequent-item-in-stream/paper/countminsketch.pdf)** implemented in `CountSketch()`
 
 - Function [prng.cpp](PhD-Foundation/frequent-item-in-stream/prng.cpp) is a probabilistic random number generator, which is refered from the [code bank](https://www.cs.rutgers.edu/~muthu/massdal-code-index.html).
 
