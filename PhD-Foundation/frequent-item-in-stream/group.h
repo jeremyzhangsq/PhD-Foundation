@@ -30,6 +30,7 @@ public:
     int ele;
     int g;
     int delta;
+    Tuple(int val, int g, int d);
     Tuple(int val, int d);
     bool operator< (const Tuple &right) const;
 

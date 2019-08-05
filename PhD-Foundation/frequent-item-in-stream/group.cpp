@@ -22,11 +22,17 @@ int heapCompare::operator() (const pair<int,int>& p1, const pair<int,int>& p2)
 {
     return p1.second > p2.second;
 }
+Tuple::Tuple(int val, int o, int d){
+    ele = val;
+    g = o;
+    delta = d;
+}
 Tuple::Tuple(int val, int d){
     ele = val;
     g = 1;
     delta = d;
 }
+
 
 bool Tuple::operator< (const Tuple &right) const
 {

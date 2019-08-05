@@ -387,13 +387,45 @@ void insert(set<Tuple> &Summary, int ele, double epsilon, int n){
         }
     }
 }
+void compress(set<Tuple> &Summary, double epsilon, int n){
+    int j = 0;
+    for(int i = Summary.size()-1; i>=2; i=j-1) {
+        j = i - 1;
+        auto cur =prev(Summary.end(),Summary.size()-i);
+        int rollSum = cur->g;
+        int delta = cur->delta;
+        while(1) {
+            if (j < 1)
+                break;
+            cur = prev(cur,1);
+            rollSum +=cur->g;
+            if (rollSum + delta > 2*epsilon*n)
+                break;
+            j--;
+        }
+        j++;
 
+        if(j < i){
+            // remove all items from j to i-1
+            // and use i as a new item
+            auto s = next(Summary.begin(),j);
+            auto d = next(Summary.begin(),i);
+            Tuple v(d->ele,rollSum,delta);
+            Summary.insert(next(d,1),v);
+            Summary.erase(s,next(d,1));
+        }
+    }
+
+}
 vector<int> GK(vector<int> &arr, double s, double epsilon){
     set<Tuple> Summary;
-    int n = 1;
+    int n = 0;
     for(int &ele : arr){
+        if ( (n%(int)floor(1/(2*epsilon))) == 0)
+            compress(Summary,epsilon,n);
         insert(Summary,ele,epsilon,n);
         n++;
+
     }
     vector<int> result;
     printf("GK Result:");

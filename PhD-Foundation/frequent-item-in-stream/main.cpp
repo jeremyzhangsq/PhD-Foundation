@@ -12,7 +12,7 @@ int main() {
     while(fscanf(fp,"%d\t",&val)!=EOF){
         data.push_back(val);
     }
-    double s = 0.01;
+    double s = 0.0102;
     double epsilon = 0.001;
 //    Majority(data);
     vector<int> bf = BruteForce(data, s);
